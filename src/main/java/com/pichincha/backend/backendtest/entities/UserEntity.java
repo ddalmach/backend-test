@@ -22,7 +22,7 @@ public class UserEntity {
     private Long id;
     @Column(name = "name")
     private String username;
-    @Column(name = "`createdDate`")
+    @Column(name = "created_date")
     private LocalDate createdDate;
 
     @OneToMany( fetch = FetchType.LAZY , mappedBy = "owner")
