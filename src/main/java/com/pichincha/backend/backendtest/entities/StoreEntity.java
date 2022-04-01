@@ -1,9 +1,11 @@
 package com.pichincha.backend.backendtest.entities;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -20,7 +22,7 @@ public class StoreEntity {
     private String category;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false,referencedColumnName = "id")
     private UserEntity owner;
 
 

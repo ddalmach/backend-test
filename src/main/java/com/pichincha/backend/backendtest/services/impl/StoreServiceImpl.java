@@ -56,6 +56,7 @@ public class StoreServiceImpl implements StoreService {
         return StoreDto.builder()
                 .name(storeEntity.getName())
                 .category(storeEntity.getCategory())
+                .owner(mapUserEntityToUserDto(storeEntity.getOwner()))
                 .build();
     }
 }

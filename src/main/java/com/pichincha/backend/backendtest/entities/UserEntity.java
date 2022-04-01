@@ -20,7 +20,9 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "name")
     private String username;
+    @Column(name = "`createdDate`")
     private LocalDate createdDate;
 
     @OneToMany( fetch = FetchType.LAZY , mappedBy = "owner")
