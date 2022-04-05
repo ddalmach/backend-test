@@ -23,7 +23,7 @@ public class StoreEntity {
     private String name;
     private String category;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false,referencedColumnName = "id")
     private UserEntity owner;
 

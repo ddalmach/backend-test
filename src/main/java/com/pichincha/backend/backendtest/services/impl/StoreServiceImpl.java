@@ -27,6 +27,8 @@ public class StoreServiceImpl implements StoreService {
                 .category(newStore.getCategory())
                 .owner(UserEntity.builder()
                         .id(newStore.getOwner().getId())
+                        .username(newStore.getOwner().getUsername())
+                        .createdDate(newStore.getOwner().getCreatedDate())
                         .build())
                 .build();
         StoreEntity persistedStored = repository.save(storeToPersist);
