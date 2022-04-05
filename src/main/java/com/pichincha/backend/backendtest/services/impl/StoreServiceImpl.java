@@ -1,7 +1,9 @@
 package com.pichincha.backend.backendtest.services.impl;
 
+import com.pichincha.backend.backendtest.dto.ProductDto;
 import com.pichincha.backend.backendtest.dto.StoreDto;
 import com.pichincha.backend.backendtest.dto.UserDto;
+import com.pichincha.backend.backendtest.entities.ProductEntity;
 import com.pichincha.backend.backendtest.entities.StoreEntity;
 import com.pichincha.backend.backendtest.entities.UserEntity;
 import com.pichincha.backend.backendtest.repository.StoreRepository;
@@ -54,9 +56,41 @@ public class StoreServiceImpl implements StoreService {
 
     private StoreDto mapStoreEntityToStoreDto(StoreEntity storeEntity){
         return StoreDto.builder()
+                .id(storeEntity.getId())
                 .name(storeEntity.getName())
                 .category(storeEntity.getCategory())
                 .owner(mapUserEntityToUserDto(storeEntity.getOwner()))
+                .products(getListOfProducts(storeEntity.getProducts()))
+                .build();
+    }
+
+    private List<ProductDto> getListOfProducts(List<ProductEntity> products) {
+        return products.stream()
+                .map(this::mapProductEntityToProductDto)
+                .collect(Collectors.toList());
+    }
+
+    private ProductDto mapProductEntityToProductDto(ProductEntity productEntity) {
+        return ProductDto.builder()
+                .name(productEntity.getName())
+                .price(productEntity.getPrice())
+                .stock(productEntity.getStock())
+                .build();
+    }
+
+    @Override
+    public StoreDto update(StoreDto storeToUpdate) {
+        StoreEntity changedStore = mapStoreDtoToStoreEntity(storeToUpdate);
+        changedStore = repository.save(changedStore);
+        return mapStoreEntityToStoreDto(changedStore);
+
+    }
+
+    private StoreEntity mapStoreDtoToStoreEntity(StoreDto storeToUpdate) {
+        return StoreEntity.builder()
+                .id(storeToUpdate.getId())
+                .name(storeToUpdate.getName())
+                .category(storeToUpdate.getCategory())
                 .build();
     }
 }

@@ -6,12 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "store")
+@Table(name = "stores")
 @Getter
 public class StoreEntity {
 
@@ -24,6 +26,14 @@ public class StoreEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false,referencedColumnName = "id")
     private UserEntity owner;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+        name = "products_by_store",
+        joinColumns = {@JoinColumn(name = "id_store")},
+        inverseJoinColumns = {@JoinColumn(name = "id_product")}
+    )
+    private List<ProductEntity> products = new ArrayList<>();
 
 
 }

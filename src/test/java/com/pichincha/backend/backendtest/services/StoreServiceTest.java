@@ -7,6 +7,7 @@ import com.pichincha.backend.backendtest.entities.UserEntity;
 import com.pichincha.backend.backendtest.repository.StoreRepository;
 import com.pichincha.backend.backendtest.services.impl.StoreServiceImpl;
 import com.pichincha.backend.backendtest.util.TestData;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -77,6 +78,22 @@ class StoreServiceTest {
 
         //then
         assertEquals(storesInDB.size(), stores.size());
+
+    }
+
+    @Test
+    void shouldReturnAnUpdatedStore(){
+        //given
+        StoreDto storeToUpdate = testData.createStoreToUpdate();
+        StoreEntity storeInDB = testData.createRandomStoreEntityWithGivenId(storeToUpdate.getId());
+        when(storeRepository.save(any(StoreEntity.class)))
+                .thenReturn(storeInDB);
+        //when
+        StoreDto updatedStore = storeService.update(storeToUpdate);
+        //then
+        Assertions.assertNotNull(updatedStore.getId());
+        Assertions.assertNotNull( updatedStore.getName());
+        Assertions.assertNotNull(updatedStore.getCategory());
 
     }
 }

@@ -7,13 +7,15 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Entity
-@Table(name = "product")
+@Table(name = "products")
 public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,5 +24,8 @@ public class ProductEntity {
     private String name;
     private BigDecimal price;
     private Long stock;
+
+    @ManyToMany(mappedBy = "products")
+    private Set<StoreEntity> stores = new HashSet<>();
 
 }

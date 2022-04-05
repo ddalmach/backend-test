@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Builder
 @Data
 @AllArgsConstructor
@@ -14,4 +16,5 @@ public class StoreDto {
     private String name;
     private String category;
     private UserDto owner;
+    private List<ProductDto> products;
 }

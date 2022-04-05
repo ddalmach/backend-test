@@ -7,4 +7,5 @@ import java.util.List;
 public interface StoreService {
     StoreDto create(StoreDto newStore);
     List<StoreDto> findByName(String nameOfStore);
+    StoreDto update(StoreDto storeToUpdate);
 }

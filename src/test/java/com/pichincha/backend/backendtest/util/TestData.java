@@ -7,6 +7,7 @@ import com.pichincha.backend.backendtest.entities.StoreEntity;
 import com.pichincha.backend.backendtest.entities.UserEntity;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
@@ -26,6 +27,7 @@ public final class TestData {
                         .name(name)
                         .category("category")
                         .owner(createRandomUserEntity())
+                        .products(Collections.emptyList())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -65,5 +67,23 @@ public final class TestData {
                 .build();
 
 
+    }
+
+    public StoreDto createStoreToUpdate() {
+        return StoreDto.builder()
+                .id(faker.number().randomNumber())
+                .name(faker.funnyName().name())
+                .category(faker.commerce().productName())
+                .build();
+    }
+
+    public StoreEntity createRandomStoreEntityWithGivenId(Long id) {
+        return StoreEntity.builder()
+                .id(id)
+                .name(faker.dragonBall().character())
+                .category(faker.programmingLanguage().name())
+                .owner(createRandomUserEntity())
+                .products(Collections.emptyList())
+                .build();
     }
 }
