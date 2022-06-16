@@ -1,6 +1,7 @@
 package com.pichincha.backend.backendtest.controller;
 
 import com.pichincha.backend.backendtest.dto.StoreDto;
+import com.pichincha.backend.backendtest.exception.StoreNotFoundException;
 import com.pichincha.backend.backendtest.services.StoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,4 +26,15 @@ public class StoresController {
     public List<StoreDto> findByName(@RequestParam String name){
         return storeService.findByName(name);
     }
+
+    @PutMapping
+    public StoreDto update(@RequestBody StoreDto storeToUpdate){
+        return storeService.update(storeToUpdate);
+    }
+
+    @DeleteMapping("/{id}")
+    public int delete(@PathVariable("id") Long id) throws StoreNotFoundException {
+        return storeService.delete(id);
+    }
+
 }

@@ -1,17 +1,17 @@
 package com.pichincha.backend.backendtest.services.impl;
 
-import com.pichincha.backend.backendtest.dto.ProductDto;
 import com.pichincha.backend.backendtest.dto.StoreDto;
-import com.pichincha.backend.backendtest.dto.UserDto;
-import com.pichincha.backend.backendtest.entities.ProductEntity;
 import com.pichincha.backend.backendtest.entities.StoreEntity;
 import com.pichincha.backend.backendtest.entities.UserEntity;
+import com.pichincha.backend.backendtest.exception.StoreNotFoundException;
 import com.pichincha.backend.backendtest.repository.StoreRepository;
 import com.pichincha.backend.backendtest.services.StoreService;
+import com.pichincha.backend.backendtest.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,15 +36,7 @@ public class StoreServiceImpl implements StoreService {
                 .id(persistedStored.getId())
                 .name(persistedStored.getName())
                 .category(persistedStored.getCategory())
-                .owner(mapUserEntityToUserDto(persistedStored.getOwner()))
-                .build();
-    }
-
-    private UserDto mapUserEntityToUserDto(UserEntity userEntity){
-        return UserDto.builder()
-                .id(userEntity.getId())
-                .username(userEntity.getUsername())
-                .createdDate(userEntity.getCreatedDate())
+                .owner(Mapper.mapUserEntityToUserDto(persistedStored.getOwner()))
                 .build();
     }
 
@@ -52,47 +44,24 @@ public class StoreServiceImpl implements StoreService {
     public List<StoreDto> findByName(String nameOfStore) {
         List<StoreEntity> foundStores = repository.findByName(nameOfStore);
         return foundStores.stream()
-                .map( this::mapStoreEntityToStoreDto)
+                .map(Mapper::mapStoreEntityToStoreDto)
                 .collect(Collectors.toList());
-    }
-
-    private StoreDto mapStoreEntityToStoreDto(StoreEntity storeEntity){
-        return StoreDto.builder()
-                .id(storeEntity.getId())
-                .name(storeEntity.getName())
-                .category(storeEntity.getCategory())
-                .owner(mapUserEntityToUserDto(storeEntity.getOwner()))
-                .products(getListOfProducts(storeEntity.getProducts()))
-                .build();
-    }
-
-    private List<ProductDto> getListOfProducts(List<ProductEntity> products) {
-        return products.stream()
-                .map(this::mapProductEntityToProductDto)
-                .collect(Collectors.toList());
-    }
-
-    private ProductDto mapProductEntityToProductDto(ProductEntity productEntity) {
-        return ProductDto.builder()
-                .name(productEntity.getName())
-                .price(productEntity.getPrice())
-                .stock(productEntity.getStock())
-                .build();
     }
 
     @Override
     public StoreDto update(StoreDto storeToUpdate) {
-        StoreEntity changedStore = mapStoreDtoToStoreEntity(storeToUpdate);
-        changedStore = repository.save(changedStore);
-        return mapStoreEntityToStoreDto(changedStore);
-
+        StoreEntity entityToUpdate = Mapper.mapStoreDtoToStoreEntity(storeToUpdate);
+        entityToUpdate = repository.save(entityToUpdate);
+        return Mapper.mapStoreEntityToStoreDto(entityToUpdate);
     }
 
-    private StoreEntity mapStoreDtoToStoreEntity(StoreDto storeToUpdate) {
-        return StoreEntity.builder()
-                .id(storeToUpdate.getId())
-                .name(storeToUpdate.getName())
-                .category(storeToUpdate.getCategory())
-                .build();
+    @Override
+    public int delete(Long id) throws StoreNotFoundException {
+        Optional<StoreEntity> storeFound = repository.findById(id);
+        if(storeFound.isEmpty()){
+            throw new StoreNotFoundException("Store with id:" + id + " does not exists" );
+        }
+        repository.deleteById(id);
+        return 1;
     }
 }

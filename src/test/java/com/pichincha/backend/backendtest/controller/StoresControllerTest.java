@@ -2,6 +2,7 @@ package com.pichincha.backend.backendtest.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pichincha.backend.backendtest.dto.StoreDto;
+import com.pichincha.backend.backendtest.exception.StoreNotFoundException;
 import com.pichincha.backend.backendtest.services.StoreService;
 import com.pichincha.backend.backendtest.util.TestData;
 import org.junit.jupiter.api.Test;
@@ -53,6 +54,39 @@ class StoresControllerTest {
 
     }
 
+    @Test
+    void shouldReturnErrorWithStatusCodeAndMessage() throws Exception {
+        //given
+        RequestBuilder request = MockMvcRequestBuilders.post("/stores")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(serializer.writeValueAsString(testData.createNewStoreRequest()));
+        Mockito.when(storeService.create(Mockito.any(StoreDto.class)))
+                .thenThrow(new RuntimeException("Error"));
+        //when
+        ResultActions response = mockMvc.perform(request);
 
+        //then
+        response.andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.code").value(500))
+                .andExpect(jsonPath("$.message").value("Error"));
+
+    }
+    @Test
+    void shouldReturnANotEntityFoundWhenDeleting() throws Exception {
+        //given
+        RequestBuilder request = MockMvcRequestBuilders.delete("/stores/{id}", 1)
+                .contentType(MediaType.APPLICATION_JSON);
+        Mockito.when(storeService.delete(1L))
+                .thenThrow(new StoreNotFoundException("Store not found"));
+
+        //when
+        ResultActions response = mockMvc.perform(request);
+
+        //then
+        response.andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.code").value(404))
+                .andExpect(jsonPath("$.message").value("Store not found"));
+
+    }
 
 }

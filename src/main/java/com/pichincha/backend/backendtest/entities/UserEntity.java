@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -26,6 +25,6 @@ public class UserEntity {
     @Column(name = "created_date")
     private LocalDate createdDate;
 
-    @OneToMany( fetch = FetchType.LAZY , mappedBy = "owner")
-    private List<StoreEntity> stores;
+    @OneToMany(mappedBy = "owner")
+    private List<StoreEntity> stores = new java.util.ArrayList<>();
 }
